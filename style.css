@@ -23,11 +23,23 @@
     flex-direction: row;
 }
 
+/* Left Content Style */
+
 .leftContent{
     background-color: aquamarine;
     height: 100%;
     flex: 1;
+    text-align: center;
 }
+
+.locationMap{
+    width: 90%;
+    border: 1px solid white;
+    border-radius: 5px;
+    box-shadow: rgba(47, 47, 47, 0.5) 2px 2px;
+}
+
+/* Right Content Style */
 
 .rightContent{
     background-color: aqua;
