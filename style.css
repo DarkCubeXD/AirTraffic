@@ -1,4 +1,4 @@
-/* Content container */
+/* Container Style */
 
 .container{
     width: 70%;
@@ -8,10 +8,14 @@
     flex-direction: column;
 }
 
+/* Header Style */
+
 .header{
     background-color: skyblue;
     flex: 1;
 }
+
+/* Content Style */
 
 .content{
     flex: 10;
