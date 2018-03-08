@@ -21,7 +21,7 @@ function userLocation() {
             "&zoom=14&size=400x300&key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU";
 
             locationMap.src = imgURL;
-        }, locationError());
+        }, locationError);
     }
     else {
         alert("This browser doesn't support geolocation!");
