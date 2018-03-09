@@ -1,6 +1,6 @@
 // Alert user about collecting his location
 
-function locationUsageAlert(){
+window.onload = function (){
     if(confirm("This site needs to use your location")){
         userLocation();
     }
@@ -75,10 +75,10 @@ function filterAircraftTraffic(){
         .then(function(e) {
             filteredAT = e["acList"].filter(function(e) {
 
-                if(e.Lat >= (lat - 1) &&
-                    e.Lat <= (lat + 1) &&
-                    e.Long >= (long - 1) &&
-                    e.Long <= (long + 1) &&
+                if(e.Lat >= (lat - 0.5) &&
+                    e.Lat <= (lat + 0.5) &&
+                    e.Long >= (long - 0.5) &&
+                    e.Long <= (long + 0.5) &&
                     e.Alt > 0)
 
                     return e;
@@ -116,18 +116,21 @@ function assignData(){
 
         let listItem = document.createElement("div");
         listItem.setAttribute("class", "listItem");
+        listItem.setAttribute("name", `${codeNumber[i]}`);
+        listItem.setAttribute("onclick", "showDetails(this)");
 
         // Filter the bounds
 
         if(filteredAT[i]["Trak"] >= 0 && filteredAT[i]["Trak"] <= 179){
             p1 = document.createElement("p");
-            p1.innerHTML = "East";
+            p1.innerHTML = "✈️";
         }
         else if(filteredAT[i]["Trak"] >= 180 && filteredAT[i]["Trak"] <= 359){
             p1 = document.createElement("p");
-            p1.innerHTML = "West";
+            p1.setAttribute("class", "flipped");
+            p1.innerHTML = "✈️";
         }
-
+        
         p2 = document.createElement("p");
         p2.innerHTML = codeNumber[i];
 
@@ -139,8 +142,22 @@ function assignData(){
         listItem.appendChild(p3);
 
         flightList.appendChild(listItem);
+
     }
-    
+}
+
+function showDetails(x){
+    for(let i = 0; i <= Object.keys(altitude).length - 1; i++){
+        if(x.getAttribute("name") == codeNumber[i]){
+            
+            alert("Plane Maufacturer: " + manufacturer[i] + "\n" +
+                "Plane Model: " + model[i] + "\n" +
+                "Destination: " + destination[i] + "\n" +
+                "Origin: " + origin[i]
+                );
+
+        }
+    }
 }
 
 // Clear the old data
