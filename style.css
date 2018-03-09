@@ -1,9 +1,32 @@
+@keyframes fadeIn{
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+body{
+    background-color: rgb(236, 236, 236);
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 /* Container Style */
 
 .container{
     width: 70%;
-    height: 100vh;
+    height: 100%;
+
     margin: 0 auto;
+
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.082) 5px 5px;
+
     display: flex;
     flex-direction: column;
 }
@@ -11,38 +34,130 @@
 /* Header Style */
 
 .header{
-    background-color: skyblue;
-    flex: 1;
+    background-color: rgba(184, 215, 231, 0.6);
+
+    border: 1px solid rgba(115, 141, 172, 0.637);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+    flex: 1 1 80px;
 }
 
 /* Content Style */
 
 .content{
-    flex: 10;
+    background-color: rgba(200, 221, 231, 0.431);
+
+    border: 1px solid rgba(115, 141, 172, 0.637);
+
+    flex: 1 1 auto;
     display: flex;
-    flex-direction: row;
 }
 
-/* Left Content Style */
+.flightList{
+    margin: 0 auto;
 
-.leftContent{
-    background-color: aquamarine;
-    height: 100%;
-    flex: 1;
-    text-align: center;
+    list-style: none;
+
+    flex-basis: 75%;
 }
 
-.locationMap{
-    width: 90%;
-    border: 1px solid white;
+.listItem{
+    background-color: rgba(184, 215, 231, 0.6);
+
+    height: 60px;
+
+    margin: 20px;
+
+    border: 1px solid rgba(115, 141, 172, 0.637);
     border-radius: 5px;
-    box-shadow: rgba(47, 47, 47, 0.5) 2px 2px;
+    box-shadow: rgba(0, 0, 0, 0.082) 3px 3px;
+
+    display: flex;
+
+    align-items: center;
+    text-align: center;
+
+    animation: fadeIn 1s;
+    transition: transform 0.4s;
 }
 
-/* Right Content Style */
+.listItem:hover{
+    transform: scale(1.02);
+    transition: transform 0.4s
+}
 
-.rightContent{
-    background-color: aqua;
-    height: 100%;
+.listItem > * {
     flex: 3;
 }
+
+.listItem > :nth-child(1){
+    flex: 1;
+}
+
+.listItem > :nth-child(2){
+    border-left: 1px solid rgba(0, 0, 0, 0.274);
+    border-right: 1px solid rgba(0, 0, 0, 0.274);
+}
+
+.sideBar{
+    background-color: rgba(184, 215, 231, 0.6);
+
+    border-left: 1px solid rgba(115, 141, 172, 0.637);
+
+    flex-basis: 25%;
+}
+
+/* Footer Style */
+
+.footer{
+    background-color: rgba(184, 215, 231, 0.6);
+
+    border: 1px solid rgba(115, 141, 172, 0.637);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+    flex: 1 1 80px;
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .flightList{    
+        flex-basis: 90%;
+    }
+    
+    .sideBar{
+        display: none;
+    }
+
+}
+
+@media only screen and (max-width: 600px) {
+
+    .container{
+        width: 100%;
+        height: 100%;
+    
+        margin: 0 auto;
+    
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.082) 5px 5px;
+    
+        display: flex;
+        flex-direction: column;
+    }
+
+    .flightList{    
+        flex-basis: 100%;
+    }
+
+    .listItem{
+        margin: 20px 0 20px 0;
+        
+        border-left: none;
+        border-right: none;
+        border-radius: 0px;
+        box-shadow: none;
+    }
+
+} 

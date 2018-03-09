@@ -1,9 +1,8 @@
 // Alert user about collecting his location
 
-function locationUsageAlert (){
+function locationUsageAlert(){
     if(confirm("This site needs to use your location")){
         userLocation();
-        filterAircraftTraffic();
     }
     else {
         alert("You must click ok for this site to function, refresh the page and try again");
@@ -15,22 +14,18 @@ function locationUsageAlert (){
 let lat = 0;
 let long = 0;
 
-function userLocation() {
+function userLocation(){
     if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(function(e) {
-            
-            // Show user location on a map
-            
-            const locationMap = document.querySelector(".locationMap");
-            
+                        
             lat = e.coords.latitude;
             long = e.coords.longitude;
 
-            let locat = lat + "," + long;
-            let imgURL = "https://maps.googleapis.com/maps/api/staticmap?center=" + locat +
-                "&zoom=14&size=400x300&key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU";
+            filterAircraftTraffic();
+            setInterval(clearOldData, 60000);
+            setInterval(filterAircraftTraffic, 60000);
+            
 
-            locationMap.src = imgURL;
         }, locationError);
     }
     else {
@@ -40,7 +35,7 @@ function userLocation() {
 
 // Error collection
 
-function locationError(e) {
+function locationError(e){
     switch(e.code) {
         case e.PERMISSION_DENIED:
             alert("User denied the request for Geolocation.")
@@ -65,25 +60,24 @@ let Manufacturer = [];
 let Model = [];
 let Destination = [];
 let Origin = [];
+let filteredAT = [];
 
 function filterAircraftTraffic(){
-
     fetch("https://cors-anywhere.herokuapp.com/https://public-api.adsbexchange.com/VirtualRadar/AircraftList.json")
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(e) {
-        let filteredAT = e["acList"].filter(function(e) {
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(e) {
+            filteredAT = e["acList"].filter(function(e) {
 
-            if(e.Lat >= (lat - 0.5) &&
-                e.Lat <= (lat + 0.5) &&
-                e.Long >= (long - 0.5) &&
-                e.Long <= (long + 0.5) &&
+            if(e.Lat >= (lat - 2) &&
+                e.Lat <= (lat + 2) &&
+                e.Long >= (long - 2) &&
+                e.Long <= (long + 2) &&
                 e.Alt > 0){
 
                 console.log(e);
                 return e;
-
             }
         });
 
@@ -94,13 +88,38 @@ function filterAircraftTraffic(){
             Model[i] = filteredAT[i]["Mdl"];
             Destination[i] = filteredAT[i]["To"];
             Origin[i] = filteredAT[i]["From"];
+            
+            let flightList = document.querySelector(".newListItems");
 
-            console.log(Altitude[i] +
-                ", " + CodeNumber[i] +
-                ", " + Manufacturer[i] +
-                ", " + Model[i] +
-                ", " + Destination[i] +
-                ", " + Origin[i]);
+            let listItem = document.createElement("div");
+            listItem.setAttribute("class", "listItem");
+
+            let p1 = document.createElement("p");
+            p1.innerHTML = "✈️";
+
+            let p2 = document.createElement("p");
+            p2.innerHTML = CodeNumber[i];
+
+            let p3 = document.createElement("p");
+            p3.innerHTML = Altitude[i];
+
+            listItem.appendChild(p1);
+            listItem.appendChild(p2);
+            listItem.appendChild(p3);
+
+            flightList.appendChild(listItem);
         }
     });
+ 
+}
+
+// Clear the old data
+
+function clearOldData(){
+
+    children = document.querySelector(".newListItems");
+
+    while(children.firstChild){
+        children.removeChild(children.firstChild);
+    }
 }
