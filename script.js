@@ -24,7 +24,6 @@ function userLocation(){
             filterAircraftTraffic();
             setInterval(clearOldData, 60000);
             setInterval(filterAircraftTraffic, 60000);
-            
 
         }, locationError);
     }
@@ -54,63 +53,94 @@ function locationError(e){
 
 // Filter the Air Traffic
 
-let Altitude = [];
-let CodeNumber = [];
-let Manufacturer = [];
-let Model = [];
-let Destination = [];
-let Origin = [];
+let altitude = [];
+let codeNumber = [];
+let manufacturer = [];
+let model = [];
+let destination = [];
+let origin = [];
 let filteredAT = [];
 
 function filterAircraftTraffic(){
+
+    // Fetch the json
+    
     fetch("https://cors-anywhere.herokuapp.com/https://public-api.adsbexchange.com/VirtualRadar/AircraftList.json")
         .then(function(response) {
             return response.json();
         })
+
+        // Filter the AirTraffic by location
+
         .then(function(e) {
             filteredAT = e["acList"].filter(function(e) {
 
-            if(e.Lat >= (lat - 2) &&
-                e.Lat <= (lat + 2) &&
-                e.Long >= (long - 2) &&
-                e.Long <= (long + 2) &&
-                e.Alt > 0){
+                if(e.Lat >= (lat - 1) &&
+                    e.Lat <= (lat + 1) &&
+                    e.Long >= (long - 1) &&
+                    e.Long <= (long + 1) &&
+                    e.Alt > 0)
 
-                console.log(e);
-                return e;
+                    return e;
+                    
+            });
+
+            // Loop through the filtered AirTraffic
+
+            for(let i = 0; i <= Object.keys(filteredAT).length - 1; i++){
+
+                // Collect needed data
+
+                altitude[i] = filteredAT[i]["Alt"];
+                codeNumber[i] = filteredAT[i]["CNum"];
+                manufacturer[i] = filteredAT[i]["Man"];
+                model[i] = filteredAT[i]["Mdl"];
+                destination[i] = filteredAT[i]["To"];
+                origin[i] = filteredAT[i]["From"];
+
             }
+            assignData();
         });
+}
 
-        for(let i = 0; i <= Object.keys(filteredAT).length - 1; i++){
-            Altitude[i] = filteredAT[i]["Alt"];
-            CodeNumber[i] = filteredAT[i]["CNum"];
-            Manufacturer[i] = filteredAT[i]["Man"];
-            Model[i] = filteredAT[i]["Mdl"];
-            Destination[i] = filteredAT[i]["To"];
-            Origin[i] = filteredAT[i]["From"];
-            
-            let flightList = document.querySelector(".newListItems");
+let p1, p2, p3;
 
-            let listItem = document.createElement("div");
-            listItem.setAttribute("class", "listItem");
+function assignData(){
+    altitude.sort(function(a, b) {return b - a});
 
-            let p1 = document.createElement("p");
-            p1.innerHTML = "✈️";
+    for(let i = 0; i <= Object.keys(altitude).length - 1; i++){
+    
+        // Assign data to newly created html tags
 
-            let p2 = document.createElement("p");
-            p2.innerHTML = CodeNumber[i];
+        let flightList = document.querySelector(".newListItems");
 
-            let p3 = document.createElement("p");
-            p3.innerHTML = Altitude[i];
+        let listItem = document.createElement("div");
+        listItem.setAttribute("class", "listItem");
 
-            listItem.appendChild(p1);
-            listItem.appendChild(p2);
-            listItem.appendChild(p3);
+        // Filter the bounds
 
-            flightList.appendChild(listItem);
+        if(filteredAT[i]["Trak"] >= 0 && filteredAT[i]["Trak"] <= 179){
+            p1 = document.createElement("p");
+            p1.innerHTML = "East";
         }
-    });
- 
+        else if(filteredAT[i]["Trak"] >= 180 && filteredAT[i]["Trak"] <= 359){
+            p1 = document.createElement("p");
+            p1.innerHTML = "West";
+        }
+
+        p2 = document.createElement("p");
+        p2.innerHTML = codeNumber[i];
+
+        p3 = document.createElement("p");
+        p3.innerHTML = altitude[i];
+
+        listItem.appendChild(p1);
+        listItem.appendChild(p2);
+        listItem.appendChild(p3);
+
+        flightList.appendChild(listItem);
+    }
+    
 }
 
 // Clear the old data
