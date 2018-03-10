@@ -75,10 +75,12 @@ function filterAircraftTraffic(){
         .then(function(e) {
             filteredAT = e["acList"].filter(function(e) {
 
-                if(e.Lat >= (lat - 0.5) &&
-                    e.Lat <= (lat + 0.5) &&
-                    e.Long >= (long - 0.5) &&
-                    e.Long <= (long + 0.5) &&
+                // Increase these numbers for wider radius
+
+                if(e.Lat >= (lat - 1) &&
+                    e.Lat <= (lat + 1) &&
+                    e.Long >= (long - 1) &&
+                    e.Long <= (long + 1) &&
                     e.Alt > 0)
 
                     return e;
@@ -130,6 +132,9 @@ function assignData(){
             p1.setAttribute("class", "flipped");
             p1.innerHTML = "✈️";
         }
+        else if(filteredAT[i] == "undefined"){
+            console.log("Undefined AT");
+        }
         
         p2 = document.createElement("p");
         p2.innerHTML = codeNumber[i];
@@ -146,19 +151,65 @@ function assignData(){
     }
 }
 
+// JS route workaround
+
+let tempPage;
+let closeButton;
+let logo;
+let info;
+
 function showDetails(x){
     for(let i = 0; i <= Object.keys(altitude).length - 1; i++){
         if(x.getAttribute("name") == codeNumber[i]){
             
-            alert("Plane Maufacturer: " + manufacturer[i] + "\n" +
-                "Plane Model: " + model[i] + "\n" +
-                "Destination: " + destination[i] + "\n" +
-                "Origin: " + origin[i]
-                );
+            tempPage = document.createElement("div");
 
+            closeButton = document.createElement("p");
+            closeButton.innerHTML = "Close<br />Information";
+            closeButton.setAttribute("onclick", "closePage()");
+            
+            logo = document.createElement("img");
+            logo.setAttribute("src", `https://logo-core.clearbit.com/${manufacturer[i]}.com?size=200`);
+            logo.setAttribute("onerror", "defaultImage()");
+
+            info = document.createElement("p");
+            info.innerHTML = "<strong>Plane Maufacturer</strong>: " + manufacturer[i] + "<br /><br />" +
+            "<strong>Plane Model</strong>: " + model[i] + "<br /><br />" +
+            "<strong>Destination</strong>: " + destination[i] + "<br /><br />" +
+            "<strong>Origin</strong>: " + origin[i]
+
+            tempPage.setAttribute("class", "tempPage");
+            tempPage.appendChild(closeButton);
+            tempPage.appendChild(logo);
+            tempPage.appendChild(info);
+            
+            document.body.appendChild(tempPage);
         }
     }
 }
+
+function closePage(){
+    let tempPages = document.querySelectorAll(".tempPage");
+    for(let i = 0; i <= tempPages.length - 1; i++)
+    {
+        tempPages[i].remove();
+    }
+}
+
+function defaultImage(){
+    logo.setAttribute("src", "https://cdn.pixabay.com/photo/2015/12/22/04/00/photo-1103595_960_720.png");
+}
+
+// Help button
+
+document.querySelector(".help").addEventListener("click", () => {
+    
+    alert("Page refreshes every 60sec to ensure fresh data. \n" + 
+    "Click on items for detailed information \n" +
+    "If there are no items in the list that means that " +
+    "there are currently no aircraft above you in a 110km radius.");
+
+});
 
 // Clear the old data
 
